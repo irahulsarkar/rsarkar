@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         notification.className = 'theme-notification';
         notification.textContent = 'Automatically set to dark mode. Change here if needed.';
         document.body.appendChild(notification);
-        
+
         // Remove after 5 seconds
         setTimeout(() => {
             notification.style.opacity = '0';
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const shouldBeDark = checkTimeForDarkMode();
         const root = document.documentElement;
         const currentTheme = localStorage.getItem('theme');
-        
+
         // Only auto-set if user hasn't manually set a preference
         if (!currentTheme) {
             if (shouldBeDark) {
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     const socialLinks = document.querySelectorAll('.social-icons a');
     const colors = ['#ff3366', '#4a6cf7', '#20c997', '#ffc107', '#17a2b8', '#6610f2'];
-    
+
     socialLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -50,45 +50,45 @@ document.addEventListener('DOMContentLoaded', function() {
             const rect = this.getBoundingClientRect();
             const x = rect.left + rect.width/2;
             const y = rect.top + rect.height/2;
-            
+
             // Phase 1: Spin for 0.5s
             this.classList.add('spinning');
-            
+
             // Phase 2: After spin completes, explode
             setTimeout(() => {
                 this.classList.remove('spinning');
                 this.classList.add('exploding');
-                
+
                 // Create explosion particles
                 for (let i = 0; i < 20; i++) {
                     createParticle(x, y, colors[Math.floor(Math.random() * colors.length)]);
                 }
-                
+
                 // Phase 3: Open link after explosion completes
                 setTimeout(() => {
                     window.open(targetUrl, '_blank');
                     this.classList.remove('exploding');
                 }, 500);
-                
+
             }, 500);
         });
     });
-    
+
     function createParticle(x, y, color) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         particle.style.left = `${x}px`;
         particle.style.top = `${y}px`;
         particle.style.backgroundColor = color;
-        
+
         // Random direction with more spread
         const angle = Math.random() * Math.PI * 2;
         const distance = 70 + Math.random() * 80;
         particle.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
         particle.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
-        
+
         document.body.appendChild(particle);
-        
+
         // Remove particle after animation
         setTimeout(() => {
             particle.remove();
@@ -99,24 +99,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggle = document.querySelector('.theme-toggle');
     const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
     const body = document.body;
-  
+
     // Check for saved theme preference or use system/time preference
     let currentTheme = localStorage.getItem('theme');
     if (!currentTheme) {
-        currentTheme = checkTimeForDarkMode() ? 'dark' : 
-                     (prefersDarkScheme.matches ? 'dark' : 'light');
+        currentTheme = checkTimeForDarkMode() ? 'dark' :
+                            (prefersDarkScheme.matches ? 'dark' : 'light');
     }
-  
+
     // Apply the initial theme
     if (currentTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
         body.classList.add('dark-theme');
     }
-  
+
     // Theme icon visibility
     const lightIcon = document.querySelector('.light-icon');
     const darkIcon = document.querySelector('.dark-icon');
-  
+
     function updateIconVisibility(theme) {
         if (theme === 'dark') {
             if (lightIcon) lightIcon.style.display = 'none';
@@ -126,14 +126,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (darkIcon) darkIcon.style.display = 'none';
         }
     }
-  
+
     // Initial icon visibility
     updateIconVisibility(currentTheme);
-  
+
     toggle.addEventListener('click', () => {
         const root = document.documentElement;
         let theme;
-    
+
         if (root.getAttribute('data-theme') === 'dark') {
             root.removeAttribute('data-theme');
             body.classList.remove('dark-theme');
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
             body.classList.add('dark-theme');
             theme = 'dark';
         }
-    
+
         // Save the theme preference
         localStorage.setItem('theme', theme);
         updateIconVisibility(theme);
@@ -162,21 +162,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Preload sounds
     typeSounds.forEach(sound => {
-        sound.volume = 0.3;
+        sound.volume = 1;
         sound.load();
     });
 
     // ========== Typewriter Effect with SVG Reveal ==========
     const svgContainer = document.querySelector('.svg-container');
     const typewriterText = document.querySelector('.typewriter-text');
-    const text = "Rahul Sarkar";
+    const text = "\u00A0\u00A0\u00A0Rahul\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Sarkar"; // Added three non-breaking spaces
     let charIndex = 0;
     let typingComplete = false;
-  
+
     if (svgContainer && typewriterText) {
         // Apply letter spacing
-        typewriterText.style.letterSpacing = '2px';
-        
+        typewriterText.style.letterSpacing = '3px';
+
         // Intersection Observer for scroll-triggered animation
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -186,18 +186,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }, { threshold: 0.5 });
-    
+
         observer.observe(svgContainer);
-    
+
         function revealSVG() {
             svgContainer.classList.add('revealed');
-            
+
             setTimeout(() => {
                 typewriterText.classList.add('typing');
                 startTyping();
             }, 1000);
         }
-        
+
         function startTyping() {
             if (charIndex < text.length) {
                 // Play random typing sound
@@ -205,27 +205,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 randomSound.currentTime = 0;
                 randomSound.play().catch(e => console.log("Audio play prevented:", e));
 
-                // Add word spacing after first name
-                let visibleText = text.substring(0, charIndex + 1);
-                if (charIndex >= 5) {
-                    visibleText = text.substring(0, 5) + 
-                                '\u00A0\u00A0' + // Non-breaking spaces
-                                text.substring(6, charIndex + 1);
-                }
-                
-                typewriterText.textContent = visibleText;
+                typewriterText.textContent = text.substring(0, charIndex + 1);
                 charIndex++;
-                
+
                 // Speed variation
                 let speed;
                 if (charIndex < 3 || charIndex > text.length - 3) {
-                    speed = 350; // Slower at start/end
-                } else if (charIndex === 6) { // Pause at space
-                    speed = 450;
-                } else {
-                    speed = 60 + Math.random() * 50;
+                    speed = 60; // Slower at start/end
+                } else if (charIndex >= 5 && charIndex <= 8) { // Adjust for the added spaces
+                    speed = 90; // Slight pause at the gap
                 }
-                
+                 else {
+                    speed = 1 + Math.random() * 10;
+                }
+
                 setTimeout(startTyping, speed);
             } else {
                 typingComplete = true;
@@ -233,14 +226,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const returnSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-typewriter-return-key-1385.mp3');
                 returnSound.volume = 0.3;
                 returnSound.play().catch(e => console.log("Audio play prevented:", e));
-                
+
                 setTimeout(() => {
                     typewriterText.classList.remove('typing');
                     typewriterText.classList.add('completed');
                 }, 2000);
             }
         }
-    
+
         // Reset animation on click
         svgContainer.addEventListener('click', function() {
             if (typingComplete) {
@@ -250,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 typewriterText.classList.remove('typing', 'completed');
                 charIndex = 0;
                 typingComplete = false;
-                
+
                 setTimeout(function() {
                     svgContainer.classList.add('revealed');
                     setTimeout(() => {
@@ -268,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
         svgImage.addEventListener('click', function() {
             this.classList.toggle('mirror-flip');
         });
-        
+
         svgImage.addEventListener('touchstart', function(e) {
             e.preventDefault();
             this.classList.toggle('mirror-flip');
@@ -277,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ========== Legacy Theme Support ==========
     const themeToggle = document.getElementById('theme-toggle');
-  
+
     function setTheme(theme) {
         if (theme === 'dark') {
             body.classList.add('dark-theme');
@@ -286,10 +279,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         localStorage.setItem('theme', theme);
     }
-  
+
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  
+
     if (savedTheme) {
         setTheme(savedTheme);
     } else if (prefersDark) {
@@ -297,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         setTheme('light');
     }
-  
+
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-theme');
